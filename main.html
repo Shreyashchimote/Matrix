@@ -58,7 +58,7 @@
         .grid-item:hover {
             transform: scale(1.05);
         }
-        .grid-item button {
+        .grid-item button, .grid-item a {
             background: linear-gradient(145deg, #f39f86, #f9d976);
             color: white;
             border: none;
@@ -68,8 +68,10 @@
             font-size: 16px;
             transition: background 0.3s;
             box-shadow: 5px 5px 10px #cfcfcf, -5px -5px 10px #ffffff;
+            text-decoration: none;
+            margin-top: 10px;
         }
-        .grid-item button:hover {
+        .grid-item button:hover, .grid-item a:hover {
             background: linear-gradient(145deg, #f9d976, #f39f86);
         }
     </style>
@@ -84,11 +86,11 @@
         <div class="grid">
             <div class="grid-item">
                 <img src="attenndace.png" alt="attendance" style="height: 50px;">
-                <<a href="attendance.html" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Attendance</a>
+                <a href="attendance.html" class="attendance-link">Attendance</a>
             </div>
             <div class="grid-item">
                 <img src="admit card.png" alt="" style="height: 50px;">
-                <button>Admit Card</button>
+                <a href="admitcard.html" class="attendance-link">Admit Card</a>
             </div>
             <div class="grid-item">
                 <img src="performave.png" alt="" style="height: 50px; border-radius: 20px; margin-bottom: 10px;" >
