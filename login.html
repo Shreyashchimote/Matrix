@@ -40,7 +40,11 @@
                 console.error("Login Error:", error.message);
                 alert("Login failed: " + error.message);
             }
-        };
+        } 
+        if (!sessionStorage.getItem("user")) {
+        alert("Access Denied! Please log in first.");
+        window.location.href = "main.html"; // Redirect to login page
+    };
     </script>
     
 </head>
@@ -66,11 +70,11 @@
             </form>
 
             <p style="margin-top: 10px; font-size: 14px;">
-                <a href="#" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Forgot Password?</a>
+                <a href="forgot.html" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Forgot Password?</a>
             </p>
 
             <p style="margin-top: 10px; font-size: 14px;">
-                Don't have an account? <a href="#" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Sign Up</a>
+                Don't have an account? <a href="sign.html" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Sign Up</a>
             </p>
         </div>
 
