@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Tracking Progress System - Login</title>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    
+        const firebaseConfig = {
+            apiKey: "AIzaSyDf-QQDqR49tObI5nLa0an4GdPvvOVSLlI",
+            authDomain: "student-tracking-system-671bd.firebaseapp.com",
+            projectId: "student-tracking-system-671bd",
+            storageBucket: "student-tracking-system-671bd.firebasestorage.app",
+            messagingSenderId: "745812278752",
+            appId: "1:745812278752:web:440a28f2f4558811a6ff85",
+            measurementId: "G-C9JYDXHN5D"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+    
+        window.validateLogin = async function(event) {
+            event.preventDefault(); // Prevent form from refreshing
+    
+            const email = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+    
+            try {
+                const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                console.log("User logged in:", userCredential.user);
+    
+                // Store login state in sessionStorage
+                sessionStorage.setItem("user", JSON.stringify(userCredential.user));
+    
+                alert("Login Successful! Redirecting...");
+                window.location.href = "main.html"; // Redirect to main page
+            } catch (error) {
+                console.error("Login Error:", error.message);
+                alert("Login failed: " + error.message);
+            }
+        };
+    </script>
+    
+</head>
+<body style="display: flex; height: 100vh; margin: 0; background: linear-gradient(135deg, #f9d976, #f39f86); font-family: 'Poppins', sans-serif; align-items: center; justify-content: center;">
+
+    <div style="display: flex; width: 70%; max-width: 900px; background: white; padding: 30px; border-radius: 20px; box-shadow: 10px 10px 20px rgba(0,0,0,0.2);">
+        <!-- Left Section - Login Form -->
+        <div style="width: 45%; padding: 30px; display: flex; flex-direction: column; justify-content: center; background: #fff5e1; border-radius: 20px;">
+            <img src="clg logo.jpg" alt="College Logo" style="width: 90px; height: 90px; border-radius: 50%; box-shadow: 4px 4px 10px rgba(0,0,0,0.2); margin-bottom: 15px;">
+            <h2 style="margin: 5px 0; color: #444;">Bapurao Deshmukh College Of Engineering</h2>
+            <p style="color: #666;">Welcome to Student Progress Tracking System</p>
+
+            <form onsubmit="validateLogin(event)" style="margin-top: 20px;">
+                <label for="username" style="font-size: 14px; font-weight: bold; color: #444;">Email</label><br>
+                <input type="email" id="username" placeholder="Enter email" required style="width: 90%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 10px; box-shadow: inset 4px 4px 8px rgba(0,0,0,0.1);"><br>
+
+                <label for="password" style="font-size: 14px; font-weight: bold; color: #444;">Password</label><br>
+                <input type="password" id="password" placeholder="Enter password" required style="width: 90%; padding: 12px; margin-bottom: 10px; border: none; border-radius: 10px; box-shadow: inset 4px 4px 8px rgba(0,0,0,0.1);"><br>
+
+                <button type="submit" style="width: 95%; padding: 12px; background: linear-gradient(135deg, #ffc66a, #ea2f54); color: white; border: none; border-radius: 15px; box-shadow: 4px 4px 10px rgba(0,0,0,0.2); font-weight: bold; cursor: pointer; transition: 0.3s;">
+                    Login
+                </button>
+            </form>
+
+            <p style="margin-top: 10px; font-size: 14px;">
+                <a href="#" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Forgot Password?</a>
+            </p>
+
+            <p style="margin-top: 10px; font-size: 14px;">
+                Don't have an account? <a href="#" style="color: #ffc66a; text-decoration: none; font-weight: bold;">Sign Up</a>
+            </p>
+        </div>
+
+        <!-- Right Section - College Info -->
+        <div style="width: 55%; display: flex; flex-direction: column; justify-content: center; padding: 40px;">
+            <h1 style="color: #444;">Welcome to <span style="color: #ffc66a;">BDCOEM</span></h1>
+            <p style="color: #555; line-height: 1.6; font-size: 16px;">
+                Our college is dedicated to excellence in education and innovation.  
+                We provide students with the best learning experience through modern technology and expert faculty.  
+                The *Student Tracking Progress System* helps students, teachers, and parents track academic performance, attendance, and insights easily.
+            </p>
+            <p style="color: #555; font-weight: bold; font-size: 14px;">For more details, visit our official website.</p>
+        </div>
+    </div>
+
+</body>
+</html>

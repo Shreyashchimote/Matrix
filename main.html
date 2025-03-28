@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Tracking Progress System - Home</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #ffc66a, #ffffff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .header {
+            width: 100%;
+            background: #ffffff;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 5px 5px 15px #cfcfcf, -5px -5px 15px #ffffff;
+            border-radius: 20px;
+            margin: 20px 0;
+        }
+        .header img {
+            height: 100px;
+        }
+        .container {
+            text-align: center;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 20px auto;
+        }
+        .grid-item {
+            background: linear-gradient(145deg, #ffc66a, #e6e6e6);
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 8px 8px 15px #cfcfcf, -8px -8px 15px #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .grid-item:hover {
+            transform: scale(1.05);
+        }
+        .grid-item button {
+            background: linear-gradient(145deg, #f39f86, #f9d976);
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            box-shadow: 5px 5px 10px #cfcfcf, -5px -5px 10px #ffffff;
+        }
+        .grid-item button:hover {
+            background: linear-gradient(145deg, #f9d976, #f39f86);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="clg logo.jpg" alt="College Logo">
+        <h2>Student Tracking Progress System</h2>
+        <img src="profile.jpg" alt="Student Profile" style="border-radius: 50%; height: 100px;">
+    </div>
+    <div class="container">
+        <div class="grid">
+            <div class="grid-item">
+                <img src="attenndace.png" alt="attendance" style="height: 50px;">
+                <button>Attendance</button>
+            </div>
+            <div class="grid-item">
+                <img src="admit card.png" alt="" style="height: 50px;">
+                <button>Admit Card</button>
+            </div>
+            <div class="grid-item">
+                <img src="performave.png" alt="" style="height: 50px; border-radius: 20px; margin-bottom: 10px;" >
+                <button>Performance</button>
+            </div>
+            <div class="grid-item">
+                <img src="resukt.png" alt="" style="height: 50px;">
+                <button>Result</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
