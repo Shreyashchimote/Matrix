@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clay Attendance Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #FFC66A;
+            --primary-dark: #E6B25F;
+            --primary-light: #FFD48A;
+            --secondary: #8A6DFF;
+            --success: #6AFF8F;
+            --danger: #FF6A7C;
+            --warning: #FFB46A;
+            --light: #FFF9F0;
+            --dark: #3A352D;
+            --gray: #A89F90;
+            --light-gray: #F5EFE5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Neue', 'Segoe UI', cursive, sans-serif;
+        }
+
+        body {
+            background-color: #FFF9F0;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Claymorphic styling */
+        .clay-card {
+            background: var(--light);
+            border-radius: 30px;
+            padding: 25px;
+            box-shadow: 
+                8px 8px 16px rgba(186, 172, 148, 0.4),
+                -8px -8px 16px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .clay-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 
+                12px 12px 24px rgba(186, 172, 148, 0.5),
+                -12px -12px 24px rgba(255, 255, 255, 0.9);
+        }
+
+        .clay-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: bold;
+            box-shadow: 
+                5px 5px 10px rgba(186, 172, 148, 0.4),
+                -5px -5px 10px rgba(255, 255, 255, 0.8),
+                inset 2px 2px 5px rgba(255, 255, 255, 0.3),
+                inset -2px -2px 5px rgba(204, 180, 132, 0.3);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .clay-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                8px 8px 16px rgba(186, 172, 148, 0.5),
+                -8px -8px 16px rgba(255, 255, 255, 0.9),
+                inset 2px 2px 5px rgba(255, 255, 255, 0.3),
+                inset -2px -2px 5px rgba(204, 180, 132, 0.3);
+        }
+
+        .clay-btn:active {
+            transform: translateY(1px);
+            box-shadow: 
+                2px 2px 5px rgba(186, 172, 148, 0.4),
+                -2px -2px 5px rgba(255, 255, 255, 0.8),
+                inset 3px 3px 7px rgba(204, 180, 132, 0.5),
+                inset -3px -3px 7px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .dashboard-header h1 {
+            color: var(--dark);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header h1 i {
+            color: var(--primary);
+            margin-right: 15px;
+        }
+
+        .student-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--light);
+            padding: 12px 20px;
+            border-radius: 50px;
+            box-shadow: 
+                5px 5px 10px rgba(186, 172, 148, 0.4),
+                -5px -5px 10px rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .student-profile:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        .profile-pic {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 
+                3px 3px 6px rgba(186, 172, 148, 0.4),
+                -3px -3px 6px rgba(255, 255, 255, 0.8);
+            border: 3px solid var(--primary);
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .student-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .student-id {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        /* Summary Cards */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            composes: clay-card;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--dark);
+            box-shadow: 
+                inset 3px 3px 6px rgba(204, 180, 132, 0.3),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.5);
+            background: var(--primary-light);
+        }
+
+        .card-content {
+            flex: 1;
+        }
+
+        .card-content h3 {
+            font-size: 1rem;
+            color: var(--gray);
+            margin-bottom: 8px;
+        }
+
+        .count {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 12px;
+            background: var(--light-gray);
+            border-radius: 6px;
+            margin-top: 15px;
+            overflow: hidden;
+            box-shadow: 
+                inset 2px 2px 4px rgba(186, 172, 148, 0.4);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+            background: linear-gradient(90deg, var(--primary), var(--warning));
+            box-shadow: 
+                2px 0 5px rgba(255, 166, 0, 0.3);
+        }
+
+        /* Controls */
+        .attendance-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .search-filter {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            min-width: 300px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            z-index: 2;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            border: none;
+            border-radius: 50px;
+            outline: none;
+            transition: all 0.3s ease;
+            background: var(--light);
+            box-shadow: 
+                inset 5px 5px 10px rgba(186, 172, 148, 0.4),
+                inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+            font-size: 1rem;
+        }
+
+        .search-box input:focus {
+            box-shadow: 
+                inset 3px 3px 6px rgba(186, 172, 148, 0.4),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.8),
+                0 0 0 3px rgba(255, 198, 106, 0.3);
+        }
+
+        .semester-filter {
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            outline: none;
+            background: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                inset 5px 5px 10px rgba(186, 172, 148, 0.4),
+                inset -5px -5px 10px rgba(255, 255, 255, 0.8);
+            appearance: none;
+            font-size: 1rem;
+            min-width: 180px;
+        }
+
+        .semester-filter:focus {
+            box-shadow: 
+                inset 3px 3px 6px rgba(186, 172, 148, 0.4),
+                inset -3px -3px 6px rgba(255, 255, 255, 0.8),
+                0 0 0 3px rgba(255, 198, 106, 0.3);
+        }
+
+        /* Table */
+        .attendance-table-container {
+            composes: clay-card;
+            margin-bottom: 30px;
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .attendance-table th {
+            text-align: left;
+            padding: 15px 20px;
+            background: var(--primary-light);
+            color: var(--dark);
+            font-weight: 600;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .attendance-table th:first-child {
+            border-radius: 15px 0 0 15px;
+        }
+
+        .attendance-table th:last-child {
+            border-radius: 0 15px 15px 0;
+        }
+
+        .attendance-table th:hover {
+            background: var(--primary);
+        }
+
+        .attendance-table th i {
+            margin-left: 8px;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        .attendance-table td {
+            padding: 20px;
+            background: var(--light);
+            box-shadow: 
+                3px 3px 6px rgba(186, 172, 148, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .attendance-table td:first-child {
+            border-radius: 15px 0 0 15px;
+        }
+
+        .attendance-table td:last-child {
+            border-radius: 0 15px 15px 0;
+        }
+
+        .attendance-table tr:hover td {
+            transform: translateY(-3px);
+            box-shadow: 
+                5px 5px 15px rgba(186, 172, 148, 0.2);
+            background: var(--primary-light);
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            box-shadow: 
+                3px 3px 6px rgba(186, 172, 148, 0.2);
+        }
+
+        .status-excellent {
+            background: var(--success);
+            color: var(--dark);
+        }
+
+        .status-good {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        .status-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .status-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Chart */
+        .chart-container {
+            composes: clay-card;
+            padding: 30px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+
+            .attendance-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 3D Effects */
+        .clay-3d {
+            position: relative;
+        }
+
+        .clay-3d::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            background: linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 50%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="dashboard-header clay-3d">
+            <h1><i class="fas fa-calendar-check"></i> Attendance Dashboard</h1>
+            <div class="student-profile clay-card clay-3d">
+                <img src="https://ui-avatars.com/api/?name=Alex+Johnson&background=FFC66A&color=3A352D" alt="Student" class="profile-pic">
+                <div class="profile-info">
+                    <span class="student-name">Alex Johnson</span>
+                    <span class="student-id">ID: STU2023001</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="summary-cards">
+            <div class="card clay-3d">
+                <div class="card-icon clay-3d">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Total Classes</h3>
+                    <p class="count" id="totalClasses">0</p>
+                </div>
+            </div>
+
+            <div class="card clay-3d">
+                <div class="card-icon clay-3d">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Attended</h3>
+                    <p class="count" id="totalAttended">0</p>
+                </div>
+            </div>
+
+            <div class="card clay-3d">
+                <div class="card-icon clay-3d">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="card-content">
+                    <h3>Attendance %</h3>
+                    <p class="count" id="totalPercentage">0%</p>
+                    <div class="progress-container">
+                        <div class="progress-fill" id="overallProgress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="attendance-controls">
+            <div class="search-filter">
+                <div class="search-box clay-3d">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search subjects...">
+                </div>
+                <select class="semester-filter clay-3d" id="semesterFilter">
+                    <option value="all">All Semesters</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                </select>
+            </div>
+            <button class="clay-btn clay-3d" id="exportBtn">
+                <i class="fas fa-file-export"></i> Export Data
+            </button>
+        </div>
+
+        <div class="attendance-table-container clay-3d">
+            <table class="attendance-table" id="attendanceTable">
+                <thead>
+                    <tr>
+                        <th data-sort="subject">Subject <i class="fas fa-sort"></i></th>
+                        <th data-sort="attended">Attended <i class="fas fa-sort"></i></th>
+                        <th data-sort="delivered">Delivered <i class="fas fa-sort"></i></th>
+                        <th data-sort="percentage">Percentage <i class="fas fa-sort"></i></th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <!-- Data will be loaded via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-container clay-3d">
+            <canvas id="attendanceChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const attendanceData = [
+            { subject: "Mathematics", attended: 28, delivered: 30, semester: 1 },
+            { subject: "Physics", attended: 25, delivered: 30, semester: 1 },
+            { subject: "Chemistry", attended: 22, delivered: 30, semester: 1 },
+            { subject: "English", attended: 20, delivered: 30, semester: 2 },
+            { subject: "Computer Science", attended: 28, delivered: 30, semester: 2 },
+            { subject: "Biology", attended: 18, delivered: 25, semester: 2 },
+            { subject: "History", attended: 15, delivered: 20, semester: 1 },
+            { subject: "Geography", attended: 12, delivered: 15, semester: 2 }
+        ];
+
+        // DOM elements
+        const tableBody = document.getElementById('tableBody');
+        const searchInput = document.getElementById('searchInput');
+        const semesterFilter = document.getElementById('semesterFilter');
+        const exportBtn = document.getElementById('exportBtn');
+        const totalClassesEl = document.getElementById('totalClasses');
+        const totalAttendedEl = document.getElementById('totalAttended');
+        const totalPercentageEl = document.getElementById('totalPercentage');
+        const overallProgressEl = document.getElementById('overallProgress');
+        const attendanceTable = document.getElementById('attendanceTable');
+
+        // Current sort state
+        let currentSort = { column: 'subject', direction: 'asc' };
+
+        // Initialize the page
+        function init() {
+            renderTable(attendanceData);
+            updateSummary();
+            initChart();
+            setupEventListeners();
+        }
+
+        // Render attendance table
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            
+            data.forEach(item => {
+                const percentage = Math.round((item.attended / item.delivered) * 100);
+                const status = getStatus(percentage);
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.subject}</td>
+                    <td>${item.attended}</td>
+                    <td>${item.delivered}</td>
+                    <td>${percentage}%</td>
+                    <td><span class="status status-${status.toLowerCase()}">${status}</span></td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Get status based on percentage
+        function getStatus(percentage) {
+            if (percentage >= 90) return 'Excellent';
+            if (percentage >= 75) return 'Good';
+            if (percentage >= 60) return 'Warning';
+            return 'Danger';
+        }
+
+        // Update summary cards
+        function updateSummary() {
+            const totalDelivered = attendanceData.reduce((sum, item) => sum + item.delivered, 0);
+            const totalAttended = attendanceData.reduce((sum, item) => sum + item.attended, 0);
+            const totalPercentage = Math.round((totalAttended / totalDelivered) * 100);
+
+            // Animate counts
+            animateValue(totalClassesEl, 0, totalDelivered, 1000);
+            animateValue(totalAttendedEl, 0, totalAttended, 1000);
+            animateValue(totalPercentageEl, 0, totalPercentage, 1000, true);
+
+            // Animate progress bar
+            overallProgressEl.style.width = `${totalPercentage}%`;
+        }
+
+        // Animate numeric values
+        function animateValue(element, start, end, duration, isPercentage = false) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                element.textContent = isPercentage ? `${value}%` : value;
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            
+            const subjects = attendanceData.map(item => item.subject);
+            const percentages = attendanceData.map(item => 
+                Math.round((item.attended / item.delivered) * 100)
+            );
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: subjects,
+                    datasets: [{
+                        label: 'Attendance Percentage',
+                        data: percentages,
+                        backgroundColor: '#FFC66A',
+                        borderColor: '#E6B25F',
+                        borderWidth: 2,
+                        borderRadius: 10,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + '%';
+                                }
+                            },
+                            displayColors: false,
+                            backgroundColor: '#3A352D',
+                            titleColor: '#FFC66A',
+                            bodyColor: '#FFF9F0',
+                            padding: 12,
+                            cornerRadius: 12,
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: '#F5EFE5',
+                                lineWidth: 2
+                            },
+                            ticks: {
+                                color: '#A89F90',
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#A89F90'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Sort data
+        function sortData(column, direction) {
+            attendanceData.sort((a, b) => {
+                let valueA, valueB;
+                
+                if (column === 'percentage') {
+                    valueA = a.attended / a.delivered;
+                    valueB = b.attended / b.delivered;
+                } else if (column === 'subject') {
+                    valueA = a[column].toLowerCase();
+                    valueB = b[column].toLowerCase();
+                } else {
+                    valueA = a[column];
+                    valueB = b[column];
+                }
+                
+                if (valueA < valueB) return direction === 'asc' ? -1 : 1;
+                if (valueA > valueB) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+            
+            renderTable(attendanceData);
+        }
+
+        // Filter data
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const semester = semesterFilter.value;
+            
+            let filteredData = attendanceData.filter(item => 
+                item.subject.toLowerCase().includes(searchTerm)
+            );
+            
+            if (semester !== 'all') {
+                filteredData = filteredData.filter(item => 
+                    item.semester === parseInt(semester)
+                );
+            }
+            
+            renderTable(filteredData);
+        }
+
+        // Export data
+        function exportData() {
+            // In a real app, this would export to CSV or PDF
+            alert('Export functionality would be implemented here!');
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Search input
+            searchInput.addEventListener('input', filterData);
+            
+            // Semester filter
+            semesterFilter.addEventListener('change', filterData);
+            
+            // Export button
+            exportBtn.addEventListener('click', exportData);
+            
+            // Table sorting
+            attendanceTable.querySelectorAll('th[data-sort]').forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-sort');
+                    
+                    // Update sort direction
+                    if (currentSort.column === column) {
+                        currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort.column = column;
+                        currentSort.direction = 'asc';
+                    }
+                    
+                    // Update sort icons
+                    attendanceTable.querySelectorAll('th i').forEach(icon => {
+                        icon.className = 'fas fa-sort';
+                    });
+                    
+                    const icon = header.querySelector('i');
+                    icon.className = currentSort.direction === 'asc' ? 
+                        'fas fa-sort-up' : 'fas fa-sort-down';
+                    
+                    // Sort data
+                    sortData(column, currentSort.direction);
+                });
+            });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
