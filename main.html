@@ -1,112 +1,155 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Tracking Progress System - Home</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(145deg, #ffc66a, #ffffff);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .header {
-            width: 100%;
-            background: #ffffff;
-            padding: 15px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 5px 5px 15px #cfcfcf, -5px -5px 15px #ffffff;
-            border-radius: 20px;
-            margin: 20px 0;
-        }
-        .header img {
-            height: 100px;
-        }
-        .container {
-            text-align: center;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            max-width: 800px;
-            margin: 20px auto;
-        }
-        .grid-item {
-            background: linear-gradient(145deg, #ffc66a, #e6e6e6);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 8px 8px 15px #cfcfcf, -8px -8px 15px #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        .grid-item:hover {
-            transform: scale(1.05);
-        }
-        .grid-item button, .grid-item a {
-            background: linear-gradient(145deg, #f39f86, #f9d976);
-            color: white;
-            border: none;
-            padding: 12px 22px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background 0.3s;
-            box-shadow: 5px 5px 10px #cfcfcf, -5px -5px 10px #ffffff;
-            text-decoration: none;
-            margin-top: 10px;
-        }
-        .grid-item button:hover, .grid-item a:hover {
-            background: linear-gradient(145deg, #f9d976, #f39f86);
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Tracking Progress System - Home</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #ffc66a, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .header {
+      width: 100%;
+      background: #ffffff;
+      padding: 15px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 5px 5px 15px #cfcfcf, -5px -5px 15px #ffffff;
+      border-radius: 20px;
+      margin: 20px 0;
+    }
+    .header img {
+      height: 100px;
+    }
+    .container {
+      text-align: center;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+    }
+    .grid-item {
+      background: linear-gradient(145deg, #ffc66a, #e6e6e6);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 8px 8px 15px #cfcfcf, -8px -8px 15px #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .grid-item:hover {
+      transform: scale(1.05);
+    }
+    .grid-item button, .grid-item a {
+      background: linear-gradient(145deg, #f39f86, #f9d976);
+      color: white;
+      border: none;
+      padding: 12px 22px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.3s;
+      box-shadow: 5px 5px 10px #cfcfcf, -5px -5px 10px #ffffff;
+      text-decoration: none;
+      margin-top: 10px;
+    }
+    .grid-item button:hover, .grid-item a:hover {
+      background: linear-gradient(145deg, #f9d976, #f39f86);
+    }
+    #profileImg {
+      border-radius: 50%;
+      height: 60px;
+      cursor: pointer;
+    }
+    #logoutBtn {
+      padding: 10px 18px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #logoutContainer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Spinner CSS */
+    .spinner {
+      width: 15px;
+      height: 15px;
+      border: 2px solid #fff;
+      border-top: 2px solid #f44336;
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
-    <div class="header">
-        <img src="clg logo.jpg" alt="College Logo">
-        <h2>Student Tracking Progress System</h2>
-        <img src="profile.jpg" alt="Student Profile" style="border-radius: 50%; height: 100px;">
+  <div class="header">
+    <img src="clg logo.jpg" alt="College Logo" />
+    <h2>Student Tracking Progress System</h2>
+    <div id="logoutContainer">
+      <img src="profile.jpg" alt="Student Profile" id="profileImg" />
+      <button id="logoutBtn">Logout</button>
     </div>
-    <div class="container">
-        <div class="grid">
-            <div class="grid-item">
-                <img src="attenndace.png" alt="presenty" style="height: 50px;">
-                <a href="attendance.html" class="attendance-link">Attendance</a>
-            </div>
-            <div class="grid-item">
-                <img src="admit card.png" alt="" style="height: 50px;">
-                <a href="admitcard.html" class="attendance-link">Admit Card</a>
-            </div>
-            <div class="grid-item">
-                <img src="performave.png" alt="" style="height: 50px; border-radius: 20px; margin-bottom: 10px;" >
-                <button>Performance</button>
-            </div>
-            <div class="grid-item">
-                <img src="resukt.png" alt="" style="height: 50px;">
-                <a href="result.html" class="attendance-link">Result</a>
-            </div>
-        </div>
-    </div>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+  </div>
 
-    const firebaseConfig = {
+  <div class="container">
+    <div class="grid">
+      <div class="grid-item">
+        <img src="attenndace.png" alt="Attendance" style="height: 50px;" />
+        <a href="attendance.html">Attendance</a>
+      </div>
+      <div class="grid-item">
+        <img src="admit card.png" alt="Admit Card" style="height: 50px;" />
+        <a href="admitcard.html">Admit Card</a>
+      </div>
+      <div class="grid-item">
+        <img src="performave.png" alt="Performance" style="height: 50px; border-radius: 20px; margin-bottom: 10px;" />
+        <button>Performance</button>
+      </div>
+      <div class="grid-item">
+        <img src="resukt.png" alt="Result" style="height: 50px;" />
+        <a href="result.html">Result</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const firebaseConfig = {
         apiKey: "AIzaSyDf-QQDqR49tObI5nLa0an4GdPvvOVSLlI",
         authDomain: "student-tracking-system-671bd.firebaseapp.com",
         projectId: "student-tracking-system-671bd",
@@ -114,32 +157,55 @@
         messagingSenderId: "745812278752",
         appId: "1:745812278752:web:440a28f2f4558811a6ff85",
         measurementId: "G-C9JYDXHN5D"
-    };
+      };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
 
-    const userData = JSON.parse(sessionStorage.getItem("user"));
-    if (!userData) {
+      const userData = JSON.parse(sessionStorage.getItem("user"));
+      if (!userData) {
         alert("Please log in first.");
         window.location.href = "index.html";
-    }
+        return;
+      }
 
-    // Inject user info into HTML (example: show email or UID)
-    document.querySelector("h2").textContent += ` - ${userData.email}`;
-    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
-const db = getFirestore(app);
+      const userRef = doc(db, "students", userData.uid);
+      const userSnap = await getDoc(userRef);
 
-const userRef = doc(db, "students", userData.uid);
-const userSnap = await getDoc(userRef);
-if (userSnap.exists()) {
-    const student = userSnap.data();
-    document.querySelector("h2").textContent = `Welcome, ${student.name}`;
-} else {
-    alert("No student record found.");
-}
+      if (userSnap.exists()) {
+        const student = userSnap.data();
+        document.querySelector("h2").textContent = `Welcome, ${student.name}`;
+      } else {
+        alert("No student record found.");
+      }
 
-</script>
+      const logoutBtn = document.getElementById("logoutBtn");
+      const profileImg = document.getElementById("profileImg");
 
+      logoutBtn.addEventListener("click", async () => {
+        const confirmLogout = confirm("Are you sure you want to logout?");
+        if (!confirmLogout) return;
+
+        logoutBtn.disabled = true;
+        logoutBtn.innerHTML = `<span style="margin-right:10px;">Logging out...</span><span class="spinner"></span>`;
+
+        try {
+          await updateDoc(userRef, {
+            lastLogout: new Date().toISOString()
+          });
+        } catch (err) {
+          console.error("Failed to save logout time:", err);
+        }
+
+        sessionStorage.clear();
+        window.location.href = "index.html";
+      });
+
+      profileImg.addEventListener("click", () => {
+        window.location.href = "profile.html";
+      });
+    });
+  </script>
 </body>
 </html>

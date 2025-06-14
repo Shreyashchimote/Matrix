@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(145deg, #ffc66a, #ffffff);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      width: 100%;
+      padding: 20px 30px;
+      background: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 5px 5px 15px #cfcfcf, -5px -5px 15px #ffffff;
+      border-radius: 0 0 20px 20px;
+    }
+
+    .header h2 {
+      margin: 0;
+      font-size: 22px;
+    }
+
+    .header button {
+      padding: 10px 18px;
+      background: #f44336;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .profile-card {
+      background: #fff;
+      margin-top: 50px;
+      padding: 30px 50px;
+      border-radius: 20px;
+      box-shadow: 8px 8px 15px #cfcfcf, -8px -8px 15px #ffffff;
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+    }
+
+    .profile-card img {
+      height: 120px;
+      width: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 20px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .profile-card h3 {
+      margin: 10px 0;
+      font-size: 24px;
+    }
+
+    .profile-card p {
+      font-size: 16px;
+      margin: 5px 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Student Profile</h2>
+    <button id="logoutBtn">Logout</button>
+  </div>
+
+  <div class="profile-card">
+    <img src="profile.jpg" alt="Student Image" id="profilePic">
+    <h3 id="studentName">Loading...</h3>
+    <p><strong>Email:</strong> <span id="studentEmail"></span></p>
+    <p><strong>UID:</strong> <span id="studentUID"></span></p>
+    <p><strong>Course:</strong> <span id="studentCourse"></span></p>
+    <p><strong>Roll No:</strong> <span id="studentRoll"></span></p>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDf-QQDqR49tObI5nLa0an4GdPvvOVSLlI",
+      authDomain: "student-tracking-system-671bd.firebaseapp.com",
+      projectId: "student-tracking-system-671bd",
+      storageBucket: "student-tracking-system-671bd.appspot.com",
+      messagingSenderId: "745812278752",
+      appId: "1:745812278752:web:440a28f2f4558811a6ff85",
+      measurementId: "G-C9JYDXHN5D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const userData = JSON.parse(sessionStorage.getItem("user"));
+    if (!userData) {
+      alert("Please log in first.");
+      window.location.href = "index.html";
+    }
+
+    // Display user data
+    document.getElementById("studentEmail").textContent = userData.email;
+    document.getElementById("studentUID").textContent = userData.uid;
+
+    const userRef = doc(db, "students", userData.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      const student = userSnap.data();
+      document.getElementById("studentName").textContent = student.name || "Unknown";
+      document.getElementById("studentCourse").textContent = student.course || "Not set";
+      document.getElementById("studentRoll").textContent = student.roll || "Not set";
+
+      // Optional: if profile image is stored as URL in Firebase
+      if (student.photoURL) {
+        document.getElementById("profilePic").src = student.photoURL;
+      }
+    } else {
+      alert("Student data not found.");
+    }
+
+    // Logout
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.clear();
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
