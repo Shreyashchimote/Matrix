@@ -68,7 +68,39 @@
             <input type="email" id="forgot-email" placeholder="Enter your Email" required>
             <button type="submit">Reset Password</button>
         </form>
-        <p>Remembered your password? <a href="login.html">Login</a></p>
+        <p>Remembered your password? <a href="index.html">Login</a></p>
     </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDf-QQDqR49tObI5nLa0an4GdPvvOVSLlI",
+        authDomain: "student-tracking-system-671bd.firebaseapp.com",
+        projectId: "student-tracking-system-671bd",
+        storageBucket: "student-tracking-system-671bd.appspot.com",
+        messagingSenderId: "745812278752",
+        appId: "1:745812278752:web:440a28f2f4558811a6ff85",
+        measurementId: "G-C9JYDXHN5D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    document.getElementById("forgot-password-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById("forgot-email").value;
+
+        try {
+            await sendPasswordResetEmail(auth, email);
+            alert("Password reset email sent! Check your inbox.");
+            window.location.href = "index.html";
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    });
+</script>
+
 </body>
 </html>

@@ -98,9 +98,48 @@
             </div>
             <div class="grid-item">
                 <img src="resukt.png" alt="" style="height: 50px;">
-                <button>Result</button>
+                <a href="result.html" class="attendance-link">Result</a>
             </div>
         </div>
     </div>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDf-QQDqR49tObI5nLa0an4GdPvvOVSLlI",
+        authDomain: "student-tracking-system-671bd.firebaseapp.com",
+        projectId: "student-tracking-system-671bd",
+        storageBucket: "student-tracking-system-671bd.appspot.com",
+        messagingSenderId: "745812278752",
+        appId: "1:745812278752:web:440a28f2f4558811a6ff85",
+        measurementId: "G-C9JYDXHN5D"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    const userData = JSON.parse(sessionStorage.getItem("user"));
+    if (!userData) {
+        alert("Please log in first.");
+        window.location.href = "index.html";
+    }
+
+    // Inject user info into HTML (example: show email or UID)
+    document.querySelector("h2").textContent += ` - ${userData.email}`;
+    import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+const db = getFirestore(app);
+
+const userRef = doc(db, "students", userData.uid);
+const userSnap = await getDoc(userRef);
+if (userSnap.exists()) {
+    const student = userSnap.data();
+    document.querySelector("h2").textContent = `Welcome, ${student.name}`;
+} else {
+    alert("No student record found.");
+}
+
+</script>
+
 </body>
 </html>
